@@ -12,39 +12,21 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image,(self.rect.x,self.rect.y))
 
 
-class Platform(GameSprite):
-
-    def move_left(self):
-        keys = key.get_pressed()
-        if keys[K_UP]:
-            self.rect.y -= self.speed
-        if keys[K_DOWN]:
-            self.rect.y += self.speed
-
-    def move_right(self):
-        keys = key.get_pressed()
-        if keys[K_w]:
-            self.rect.y -= self.speed
-        if keys[K_s]:
-            self.rect.y += self.speed
-
-
 window = display.set_mode((700,500))
 
 
 ball = GameSprite('tenis_ball.png', 300, 200, 10, 50,50)
-player1 = Platform('racket.png', 0, 200, 10, 50,150)
-player2 = Platform('racket.png', 650, 200, 10, 50,150)
+player1 = GameSprite('racket.png', 0, 200, 10, 50,150)
+player2 = GameSprite('racket.png', 650, 200, 10, 50,150)
 
-speed_x = 3
-speed_y = 3
+speed_x = 10
+speed_y = 10
 
 font.init()
 font = font.Font(None,40)
 lose1 = font.render('Победил второй игрок',True,(255,255,255))
 lose2 = font.render('Победил первый игрок',True,(255,255,255))
 
-clock = time.Clock()
 game = True
 finish = False
 while game:
@@ -59,12 +41,18 @@ while game:
 
         player1.reset()
         player2.reset()
-        player1.move_left()
-        player2.move_right()
+
 
         ball.reset()
         ball.rect.x += speed_x
         ball.rect.y += speed_y
+
+
+        keys = key.get_pressed()
+        if keys[K_UP]:
+            player1.rect.y -= player1.speed
+        if keys[K_DOWN]:
+            player1.rect.y += player1.speed
 
         if ball.rect.y > 450 or ball.rect.y < 0 :
             speed_y *= -1
@@ -82,12 +70,14 @@ while game:
         if ball.rect.x > 650:
             window.blit(lose2,(200,200))
             finish = True
-            
 
-        clock.tick(60)
+
+        if player2.rect.y > ball.rect.y:
+            player2.rect.y -= 5
+        else:
+            player2.rect.y += 5
+
         display.update()
-
     else:
-        time.delay(5000)
         finish = False
 
