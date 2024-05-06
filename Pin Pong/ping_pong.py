@@ -39,31 +39,55 @@ player2 = Platform('racket.png', 650, 200, 10, 50,150)
 speed_x = 3
 speed_y = 3
 
+font.init()
+font = font.Font(None,40)
+lose1 = font.render('Победил второй игрок',True,(255,255,255))
+lose2 = font.render('Победил первый игрок',True,(255,255,255))
 
 clock = time.Clock()
 game = True
+finish = False
 while game:
 
     for e in event.get():
         if e.type == QUIT:
             game = False
 
-    window.fill((200,250,250))
+    if not finish:
 
-    player1.reset()
-    player2.reset()
-    player1.move_left()
-    player2.move_right()
+        window.fill((200,250,250))
 
-    ball.reset()
-    ball.rect.x += speed_x
-    ball.rect.y += speed_y
+        player1.reset()
+        player2.reset()
+        player1.move_left()
+        player2.move_right()
 
-    if ball.rect.y > 450 or ball.rect.y < 0 :
-        speed_y *= -1
+        ball.reset()
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
 
-    if ball.rect.x > 650  or ball.rect.x < 0 :
-        speed_x *= -1
+        if ball.rect.y > 450 or ball.rect.y < 0 :
+            speed_y *= -1
 
-    clock.tick(60)
-    display.update()
+        if ball.rect.x > 650  or ball.rect.x < 0 :
+            speed_x *= -1
+
+        if sprite.collide_rect(player1, ball) or sprite.collide_rect(player2, ball):
+            speed_x *= -1
+
+        if ball.rect.x < 0:
+            window.blit(lose1,(200,200))
+            finish = True
+
+        if ball.rect.x > 650:
+            window.blit(lose2,(200,200))
+            finish = True
+            
+
+        clock.tick(60)
+        display.update()
+
+    else:
+        time.delay(5000)
+        finish = False
+
