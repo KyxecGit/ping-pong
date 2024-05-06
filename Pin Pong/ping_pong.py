@@ -12,10 +12,15 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image,(self.rect.x,self.rect.y))
 
 window = display.set_mode((700,500))
-window.fill((200,250,250))
+
 
 ball = GameSprite('tenis_ball.png', 300,200, 10, 50,50)
 
+speed_x = 3
+speed_y = 3
+
+
+clock = time.Clock()
 game = True
 while game:
 
@@ -23,6 +28,16 @@ while game:
         if e.type == QUIT:
             game = False
 
+    window.fill((200,250,250))
     ball.reset()
+    ball.rect.x += speed_x
+    ball.rect.y += speed_y
 
+    if ball.rect.y > 450 or ball.rect.y < 0 :
+        speed_y *= -1
+
+    if ball.rect.x > 650  or ball.rect.x < 0 :
+        speed_x *= -1
+
+    clock.tick(60)
     display.update()
